@@ -255,6 +255,12 @@ A：发布版**不申请 `INTERNET` 权限**，全部功能离线可用。
 
 ## 打赏
 
-如果这个项目对你有帮助，可以请作者喝杯咖啡。
+如果这个项目对你有帮助，可以请作者喝杯咖啡 —— **完全自愿，不影响任何功能**。
 
-<!-- TODO: 打赏二维码图片待补 -->
+<p align="center">
+  <img src="screenshots/donate-alipay.jpg" alt="支付宝收款码" width="300">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="screenshots/donate-wechat.png" alt="微信收款码" width="300">
+</p>
+
+<p align="center"><sub>左：支付宝　·　右：微信支付（扫码即可，不用加好友）</sub></p>
