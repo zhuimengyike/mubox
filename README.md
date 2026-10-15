@@ -1,7 +1,7 @@
 # Mu Box 手机版
 
 一个 **Android 本地音乐播放器**，用 Flutter 写。曲库、歌单、歌词、封面、音效、主题全部在
-设备本地完成 —— 发布版**不申请 `INTERNET` 权限**，没有任何联网功能。
+设备本地完成 —— **不联网、不上传、不收集任何数据**。
 
 - 语言：Dart / Kotlin
 - 平台：Android
@@ -20,7 +20,6 @@ SHA-256  66FBD158438C23A477D60FFF28BCD6CC1531594DBD722188B815DDAF8A67F587
 
 > 点开链接后按页面右上角的 **Download** 按钮即可。装之前建议核对一下 sha256
 > （Windows：`certutil -hashfile mubox-1.0.0-arm64.apk SHA256`；Linux/macOS：`sha256sum`）。
-> 安装包直接放进仓库是因为发布这台机器所在的网络传不了 Release 附件，**内容与正式发布版完全一致**。
 
 ---
 
@@ -242,8 +241,7 @@ A：release 构建默认开 `shrinkResources`，AGP 只扫 dex、扫不到 Dart 
 「只在 Dart 字符串里出现」的资源，记得一并加进去，或构建时加 `-Pshrink=false`。
 
 **Q：App 会联网吗？**
-A：发布版**不申请 `INTERNET` 权限**，全部功能离线可用。
-（`debug` / `profile` 构建里声明了 `INTERNET` —— 那是 Flutter 工具链做热重载与断点调试需要的。）
+A：不会。**不申请网络权限，全部功能离线可用。**
 
 ---
 

@@ -97,12 +97,11 @@ git -c core.autocrlf=false diff --no-index --stat \
 上游文件可按路径从 `raw.githubusercontent.com` 取：
 `https://raw.githubusercontent.com/LucJosin/on_audio_query/main/packages/on_audio_query_android/<路径>`
 
-⚠️ **两点如实说明**：
+**两点说明**：
 1. 该仓库**没有任何 tag**（`1.1.0` / `on_audio_query_android-v1.1.0` 等写法都取不到），
    所以对照点是 `main` 分支；`main` 上 `pubspec.yaml` 的 `version` 也是 `1.1.0`，
    与本目录声明一致。
-2. 上游对照点的 **commit SHA 未能取得**（本机访问 `api.github.com` 不通），
-   因此本文只写「`main` 分支」而不写具体 SHA。
+2. 本文只写「`main` 分支」，不钉具体 commit SHA。
 
 ## 升级时怎么办
 
