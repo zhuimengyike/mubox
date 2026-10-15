@@ -1,0 +1,70 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+/coverage/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# 根目录调试产物（临时脚本/备份/构建日志，不入库）
+# ⚠️ 这里刻意不用 `/*.png` 这种通配：README 的截图如果放在根目录，会被静默忽略掉。
+#    本机那两个图标预览图按名字逐个忽略。
+/*.py
+/nav.xml
+/refresh.xml
+/refresh_texts.txt
+/backup_*/
+/build_log*.txt
+/icon_preview.png
+/icon_preview_512.png
+
+# 本地编辑器 / 命令行工具的私有设置目录
+/.claude/
+
+# gradle 构建产物（含 third_party 下两个插件模块本地构建出来的）
+/android/build/
+/third_party/*/android/build/
+/third_party/*/android/.gradle/
+/third_party/*/android/.kotlin/
+
+# 签名物料：keystore 与密码文件绝不入库（模板 key.properties.example 才入库）
+/android/keystore/
+/android/key.properties

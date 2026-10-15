@@ -1,0 +1,26 @@
+# 正式签名配置模板。
+#
+# 用法：把本文件复制成同目录的 key.properties，再把下面四项换成你自己的值。
+#     cp android/key.properties.example android/key.properties
+#
+# ⚠️ key.properties 与 keystore 本体都**不要入库**（两者都已在 .gitignore 里；
+#    入 git 的只有本模板文件）。
+#
+# ⚠️ 切签名会改变 App 的签名指纹，而**签名不同的包无法覆盖安装**：
+#     `adb install -r` 会报 INSTALL_FAILED_UPDATE_INCOMPATIBLE，物理上只能
+#     「App 内导出数据备份 → 卸载（App 私有数据会被清空）→ 装新版 → 从备份恢复」。
+#     所以：只在打算对外发布、或你明确愿意走一次这套流程时才启用正式签名。
+#     android/app/build.gradle.kts 只在 key.properties **存在**时才切正式签名，
+#     不存在时回退 debug 签名 —— 这是有意的。
+#
+# 自己生成一个 keystore（一条命令，按提示填口令与姓名等信息）：
+#     keytool -genkeypair -v -keystore android/keystore/mubox-release.jks \
+#         -keyalg RSA -keysize 2048 -validity 10000 -alias mubox
+# 生成后把口令填到下面，并让 storeFile 指向那个 .jks。
+#
+# 备份提醒：keystore 与这份口令丢了就再也签不出**同一个**包了（老用户只能卸载重装）。
+# 把它们放到仓库之外的安全位置各存一份。
+storeFile=../keystore/mubox-release.jks
+storePassword=CHANGE_ME
+keyAlias=mubox
+keyPassword=CHANGE_ME

@@ -1,0 +1,54 @@
+group 'com.lucasjosino.on_audio_query'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.6.10'
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.1.3'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'com.android.library'
+// 本地补丁：**不再自己 apply kotlin-android**。
+// Flutter 的 Built-in Kotlin 已经替每个插件应用了 KGP（flutter_tools 的
+// FlutterPluginUtils.detectApplyingKotlinGradlePlugin 会 apply("kotlin-android")），
+// 插件再 apply 一次就是重复 —— 现在只是 WARNING（"plugins that apply Kotlin Gradle Plugin"），
+// 未来版本的 Flutter 会直接构建失败。检测方式是按 build 文件**文本**匹配
+// `apply plugin: 'kotlin-android'` / plugins block 里的 KGP 声明，所以删掉这一行即根治。
+// 对照：本项目的 audioplayers_android fork 本来就是这么写的，一直没报警告。
+// KGP 仍需留在 classpath 上（Flutter apply 时要用它），所以上面的 buildscript 保持不动。
+
+android {
+    // 本地补丁：原插件未声明 namespace，AGP 8+ 构建会报错
+    namespace 'com.lucasjosino.on_audio_query'
+    compileSdkVersion 36
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+    defaultConfig {
+        minSdkVersion 16
+    }
+    // 本地补丁：统一 Java/Kotlin 编译目标为 17，避免 AGP 9 + Java 21 下
+    // "Inconsistent JVM Target" 报错（Java 默认 11 vs Kotlin 默认 21）
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+}
+
+dependencies {
+    def lifecycle_version = "2.3.1"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+}

@@ -1,0 +1,78 @@
+# 行尾与二进制判定策略。
+#
+# 为什么需要这个文件：很多机器的 git 全局配置是 `core.autocrlf=true`，那样「检出到磁盘的
+# 行尾」就取决于检出方那台机器的配置 —— 同一份仓库在不同机器上字节不同、diff 无端膨胀。
+# 这里把规则钉死，让「新克隆出来的工作树」是确定的。
+#
+# 注意口径：这些规则**不改写已经在磁盘上的字节**，也不产生整文件 diff。它们只决定
+# ① 新检出时写什么、② `git add` 往索引里存什么（文本一律存 LF）。已经存在的 CRLF 工作树文件
+# 会一直保持 CRLF，直到它被重新检出。
+#
+# ⚠️ 想量「某个文件里到底有几个 CR」，别用 PowerShell 的管道去接原生命令的输出 ——
+#    它会**吃掉 CR**（恒报 0），而经过字符串层重新编码还会**凭空造出 CR**。
+#    要么读原始字节，要么让一个进程同时握住两端，例如：
+#      python -c "import subprocess; b=subprocess.run(['git','-C',r'<repo>','cat-file','blob','HEAD:<path>'],capture_output=True).stdout; print(len(b), b.count(b'\r'), b.count(b'\n'))"
+#    而且一个只会报「0 个 CR」的探针本身没有价值，除非你喂它一个**确实含 CR** 的文件
+#    （仓库里的 PNG 就是现成的阳性样本），看它敢不敢报出来。
+
+# --- 文本：仓库里与磁盘上一律 LF ---
+*.dart       text eol=lf
+*.kt         text eol=lf
+# Gradle Kotlin DSL（*.gradle.kts）与 Groovy 构建脚本。
+# ⚠️ `*.kt` **不匹配** `build.gradle.kts`，两行必须都写（gitattributes 没有花括号展开）。
+*.kts        text eol=lf
+*.gradle     text eol=lf
+*.properties text eol=lf
+*.yaml       text eol=lf
+*.xml        text eol=lf
+*.md         text eol=lf
+*.json       text eol=lf
+*.txt        text eol=lf
+# GLSL 片段着色器：pubspec.yaml 的 `shaders:` 在**构建期**由 flutter 工具编译，
+# 运行时用 FragmentProgram.fromAsset 加载。保持 LF，编译产物才不依赖检出机的 git 配置。
+*.frag       text eol=lf
+# tool/ 下的 Python 生成器与自检脚本。
+*.py         text eol=lf
+# ⚠️ 这是本文件里最要命的一行：`build_release.sh` 如果在 CRLF 下被检出，
+#    bash 会报 `$'\r': command not found`，整条脚本直接跑不起来。别删。
+*.sh         text eol=lf
+*.lock       text eol=lf
+# android/key.properties.example —— 它被复制成 key.properties（后者不入库）。
+# 钉成 LF，复制出来的那份也就是 LF。
+*.example    text eol=lf
+
+# --- 仓库基础设施：不写规则的话会跟着 core.autocrlf 走 ---
+# ⚠️ `.gitignore` 必须钉 LF：git 是**逐字符**读模式行的，行尾那个 CR 会变成模式的一部分，
+#    于是一条忽略规则会**静默失效**。`.gitattributes` 同理（见文件末尾的自指规则）。
+.gitignore    text eol=lf
+.metadata     text eol=lf
+# 上游第三方的许可证原文 + 本项目根目录的 LICENSE。
+# 无斜杠 ⇒ 匹配任意层级的同名文件。
+LICENSE       text eol=lf
+
+# --- Windows 原生脚本：CRLF 才是本来的形态 ---
+# ⚠️ 这里只管行尾，**跟 UTF-8 BOM 是两件事**：PowerShell 5.1 读**无 BOM** 的 `.ps1`
+#    会按本机代码页解码，中文与 emoji 变乱码，而乱码字节会把 `$var` 插值一起吃掉。
+#    `build_release.ps1` 是 **UTF-8 带 BOM** 存的（前 3 字节 `EF BB BF`），
+#    git 不会去动 BOM，所以别因为「反正 git 会规整」就把 BOM 去掉。
+*.ps1  text eol=crlf
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+
+# --- 二进制：git 不许做任何规整或行 diff ---
+# 启动图标与通知栏图标。**PNG 的头部签名里本来就含 CR**，别把它当成行尾。
+*.png  binary
+*.jpg   binary
+*.jpeg  binary
+*.ico   binary
+# 签名物料。keystore 本体不入库，入库的只有模板；真被强加进来时，
+# "binary" 至少能拦住 git 去规整或逐行 diff 它。
+*.jks      binary
+*.keystore binary
+# 构建产物。
+*.jar  binary
+*.apk  binary
+
+# 本文件自己。少了这条，`core.autocrlf=true` 会让这个文件本身被检出成 CRLF ——
+# 正是它要防的那种无谓抖动。
+.gitattributes text eol=lf

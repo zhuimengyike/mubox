@@ -1,0 +1,2 @@
+# fork 自 audioplayers_android；主项目未依赖 flame_lint，故不 include 上游规则
+# （避免 `flutter analyze` 报 include_file_not_found）。
